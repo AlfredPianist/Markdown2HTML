@@ -1,9 +1,8 @@
 #!/usr/bin/env ruby
 require "digest"
-require 'active_support'
+require "active_support"
 
 module MarkdownParser
-
   SYMBOLS = {
     :h => "#",
     :ul => "-",
@@ -11,8 +10,9 @@ module MarkdownParser
   }
 
   class Parser
-    def initialize(src_filename)
+    def initialize(src_filename, dest_filename)
       @src_filename = src_filename
+      @dest_filename = dest_filename
       @tag_stack = []
       @output = []
     end
@@ -21,7 +21,6 @@ module MarkdownParser
       File.open(@src_filename) do |file|
         src_content = file.readlines
         src_content.each do |line|
-
           if line.blank?
             if @tag_stack.include?(:p)
               @output << "</p>"
@@ -62,7 +61,6 @@ module MarkdownParser
             else
               # noop
             end
-
           else
             if !@tag_stack.include?(:p)
               @tag_stack << :p
@@ -80,7 +78,7 @@ module MarkdownParser
         end
       end
 
-      @output.join "\n"
+      write_to_file()
     end
 
     private
@@ -115,22 +113,26 @@ module MarkdownParser
 
       text
     end
+
+    def write_to_file
+      File.open(@dest_filename, "w") do |file|
+        file.write @output.join "\n"
+      end
+    end
   end
 end
 
 begin
-  if ARGV.length != 1
+  if ARGV.length != 2
     puts "Usage: ./markdown2html.rb README.md README.html"
     exit(false)
   end
 
   src_filename = ARGV[0]
-  puts MarkdownParser::Parser.new(src_filename).parse
+  dest_filename = ARGV[1]
+  puts MarkdownParser::Parser.new(src_filename, dest_filename).parse
   exit(true)
 rescue Errno::ENOENT
   puts "Missing #{src_filename}"
   exit(false)
 end
-
-
-
