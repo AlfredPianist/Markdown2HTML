@@ -177,7 +177,7 @@ def parse(content):
 if __name__ == "__main__":
     args = sys.argv[1:]
     if len(args) != 2:
-        print("Usage: ./markdown2html.py README.md README.html")
+        sys.stderr.write("Usage: ./markdown2html.py README.md README.html\n")
         sys.exit(1)
     try:
         src_filename = args[0]
@@ -185,7 +185,7 @@ if __name__ == "__main__":
         with open(src_filename, 'r') as src_file:
             src_content = src_file.readlines()
     except FileNotFoundError:
-        print(f"Missing {src_filename}")
+        sys.stderr.write(f"Missing {src_filename}\n")
         sys.exit(1)
     else:
         with open(dest_filename, 'w') as dest_file:
