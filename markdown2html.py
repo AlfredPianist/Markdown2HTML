@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/python3
 """This module converts a Markdown file to HTML given certain specifications.
 """
 import sys
